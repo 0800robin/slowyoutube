@@ -1,0 +1,22 @@
+#controls {
+  display: flex;
+  flex-direction: column;
+}
+  
+input, button {
+  height: 75px;
+  margin-bottom: 2em;
+}
+
+body{
+  text-align: center;
+}
+.hidden {
+  display: none;
+}
+
+img {
+  width: 50vh;
+  margin: 0 auto;
+
+}
