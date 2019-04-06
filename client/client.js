@@ -39,16 +39,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 
   if(window.location.search) {
-    video_id = window.location.search;
+    let linkSlice = sliceFullLink(window.location.search);
     show(loadingText)
     hide(formDiv);
-    let linkSlice = sliceFullLink(linkInput.value);
 
-    sendRequest(video_id.slice(3), function() {
+    sendRequest(linkSlice, function() {
       hide(loadingText);
       hide(info)
       show(controlsDiv);
-      showPic(video_id.slice(3))
+      showPic(linkSlice)
     });
   }
 
@@ -147,7 +146,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   function sliceFullLink(link) {
     let id = '';
     let slicePoint = link.indexOf('?v=')
-    return link.slice(slicePoint+3)
+    return link.slice(slicePoint+3, slicePoint+14)
   }
 });
 
