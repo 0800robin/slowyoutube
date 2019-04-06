@@ -80,7 +80,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
 
     function playBuffer() {
-      console.log("playing at")
       isPlaying = true
         sourceNode = audioContext.createBufferSource();
         sourceNode.loop = true;
