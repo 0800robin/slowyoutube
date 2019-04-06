@@ -3,21 +3,71 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Slow Youtube</title>
+  <title>SlowYouTube</title>
+  <link rel="icon" href="https://s3.amazonaws.com/pix.iemoji.com/images/emoji/apple/ios-12/256/snail.png">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-134712769-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-134712769-1');
+    </script>
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" type="text/css" media="screen" href="./client/style.css">
   <script src="./client/client.js"></script>
 </head>
 <body>
-  <h1>Slow Youtube</h1>
-  <div id='controls'>
-    <input id='link-input' value='Paste full YouTube link here' />
-    <button id='load'>Load</button>
-    <img id='preview' class='hidden' src='' />
-    <h2 class='hidden' id='loading-text'>Loading Audio</h2>
+  <h1><span>S</span>
+      <span>L</span>
+      <span>O</span>
+      <span>W</span>
+      <span></span>
+      <span>Y</span>
+      <span>O</span>
+      <span>U</span>
+      <span>T</span>
+      <span>U</span>
+      <span>B</span>
+      <span>E</span>
+      </h1>
+  <div id='container'>
+    <div id="form">
+      <h3>Love listening to tunes <a href="https://www.youtube.com/watch?v=ccZgQMrZuGc" target="_blank">slowed down</a>? <br/>
+        You now have the power!</h3>
+        <input id='link-input' placeholder='Paste YouTube link and control audio speed' />
+        <button id='load'>GO</button>
+    </div>
 
-    <input id='speed-slider' type='range' min='0.2' value='1' max ='1.5' step='0.01' class='hidden' />
-    <button id='play' class='hidden'>Play</button>
+    <h2 id='loading-text' class='hidden'>Loading Audio</h2>
+
+    <div id="controls" class='hidden'> 
+        <img id='preview' src='' />
+        <br/>
+        <br/>
+        <button id='play'>Play</button>
+        <!-- <div>
+            <button class="skip" data-time="-10">-10s</button>
+            <button class="skip" data-time="10">+10s</button>
+          </div> -->
+        <p>Playback Speed: <span id="speed-display">1.0x</span></p>
+        <div class='speed-slider-container'>
+          <span>0.2x</span>
+            <input id='speed-slider' type='range' min='0.2' value='1' max ='1.5' step='0.01' />
+          <span>1.5x</span>
+        </div>
+
+       
+
+        <a href="https://www.slowyoutube.com">
+          <button>Slow down a different video</button>
+        </a>
+    </div>
+  </div>
+  <div id="info">
+    <p>You can change any youtube.com link to slowyoutube.com!</p>
+    <img src='./client/howto.gif' />
+      <!-- <h4>Change https://www.youtube.com/watch?v=..... <br/> to https://www.slowyoutube.com/watch?v=..... </h4> -->
   </div>
 </body>
 </html>

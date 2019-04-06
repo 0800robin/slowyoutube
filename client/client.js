@@ -1,122 +1,139 @@
-console.log('hello world');
+console.log('🔥');
+
+
+
 
 document.addEventListener("DOMContentLoaded", function(event) {
+  window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
   let audioContext = new AudioContext();
-  const bufferSource = audioContext.createBufferSource()
+
   let speedSlider = document.getElementById('speed-slider');
   let speedValue = 1; 
 
-  var haveSentRequest = false;
-  var loading = false; 
+  let loadedBuffer; 
+  let sourceNode;
 
-  speedSlider.addEventListener('change', function(e) {
+  let timeAtPause = 0;
+
+  speedSlider.addEventListener('input', function(e) {
     speedValue = parseFloat(e.target.value);
-    console.log(speedValue);
-    bufferSource.playbackRate.value = speedValue;
+    displaySpeed(speedValue)
+    sourceNode.playbackRate.value = speedValue;
   })
 
 
+  let formDiv = document.getElementById('form')
+  let loadButton = document.getElementById('load');
+  let linkInput = document.getElementById('link-input');
+  let info = document.getElementById('info');
 
-  var playButton = document.getElementById('play');
-  // var pauseButton = document.getElementById('pause');
+  let loadingText = document.getElementById('loading-text');
 
-  var loadButton = document.getElementById('load');
-  var linkInput = document.getElementById('link-input');
-  var loadingText = document.getElementById('loading-text');
-  var preview = document.getElementById('preview');
+  let controlsDiv = document.getElementById('controls')
+  let playButton = document.getElementById('play');
+  let preview = document.getElementById('preview');
 
-  var video_id = '';
+  let isPlaying = false;
+  let video_id = '';
 
-
-  loadButton.addEventListener('click', function(e){
-      sendRequest(sliceFullLink(linkInput.value), function(){
-        hide(loadingText);
-        show(speedSlider);
-        show(playButton);
-      })
-    
-  })
 
   if(window.location.search) {
-    video_id = window.location.search ;
-    console.log(video_id);
-
+    video_id = window.location.search;
     sendRequest(video_id.slice(3), function() {
       hide(loadingText);
-    
       show(speedSlider);
       show(playButton);
-
     });
   }
 
+  loadButton.addEventListener('click', function(e){
+      let linkSlice = sliceFullLink(linkInput.value);
 
-  playButton.addEventListener('click', function(e){
-    audioContext.resume().then(()=> {
-      bufferSource.start(0)
-    })
+      if(linkSlice.length > 0) {
+        show(loadingText)
+        hide(formDiv);
+        sendRequest(linkSlice, function(){
+          hide(loadingText);
+          hide(info)
+          show(controlsDiv);
+          showPic(linkSlice)
+        })
+      }
 
+    
   })
 
-  // pauseButton.addEventListener('click', function(e){
-  //   bufferSource.stop()
-  // });
 
-
-
-  
-  function sendRequest(id, fn) {
-    const request = new XMLHttpRequest()
-    console.log(request);
-    let thing = id;
-    request.open('POST', `/stream/${id}`, true)
-
-    request.responseType = 'arraybuffer'
-    request.onload = function() {
-      audioContext.decodeAudioData(request.response, buffer => {
-  
-        console.log(buffer);
-        bufferSource.buffer = buffer
-        bufferSource.playbackRate.value = speedValue;
-        bufferSource.connect(audioContext.destination);
-
-        if(fn) {
-          fn();
-        }
+    function pause() {
+      audioContext.suspend().then(() => {
+        timeAtPause = audioContext.currentTime; 
+        audioContext.pause
+        sourceNode.stop(0);
+        isPlaying = false;
       })
     }
-    request.send();
-    haveSentRequest = true;
-    sentRequest(id);
-    
+
+    function playBuffer() {
+      isPlaying = true
+        sourceNode = audioContext.createBufferSource();
+        sourceNode.loop = true;
+        sourceNode.buffer = loadedBuffer;
+        sourceNode.playbackRate.value = speedValue;
+        sourceNode.connect(audioContext.destination);
+        sourceNode.start(0, timeAtPause);
+    }
+
+  function play() {
+    audioContext.resume().then(()=> {
+      if(!isPlaying) {
+        playBuffer();
+      } else {
+        pause()
+      }    
+    }).then(() => {
+      document.getElementById('play').innerHTML = isPlaying ? "Pause" :  "Play"
+    })
   }
 
-  function sentRequest(id) {
-    hide(linkInput);
-    hide(loadButton);
-    console.log("http://i3.ytimg.com/vi/"+id +"/hqdefault.jpg");
-    preview.src = "http://i3.ytimg.com/vi/"+id +"/hqdefault.jpg";
-    show(preview);
-    show(loadingText);
+  playButton.addEventListener('click', function(e){
+    play();
+  })
+
+  preview.addEventListener('click', function(){
+    play();
+  })
+  
+  function sendRequest(id, callback) {
+    fetch(`/stream/${id}`, {
+      method: 'POST'
+    })
+    .then(res => res.arrayBuffer())
+    .then(data => {
+      audioContext.decodeAudioData(data, buffer => {
+        loadedBuffer = buffer
+            // bufferSource.playbackRate.value = speedValue;
+            // bufferSource.connect(audioContext.destination);
+        callback();
+      })
+    })
   }
 
+  function showPic(id) {
+    preview.src = "http://i3.ytimg.com/vi/"+ id +"/hqdefault.jpg";
 
-  
-  function loading(){
-  
-  }
-  
-  function finishedLoading() {
-  
   }
   
   function hide(elm) {
-    elm.classList='hidden';
+    elm.classList = 'hidden';
   }
   
   function show(elm) {
-    console.log(elm.classList)
-    elm.classList='';
+    elm.classList = '';
+  }
+
+  function displaySpeed(speed) {
+    document.getElementById('speed-display').innerHTML = speed + 'x';
   }
 
   function sliceFullLink(link) {
