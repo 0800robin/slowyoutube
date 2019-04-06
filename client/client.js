@@ -40,10 +40,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   if(window.location.search) {
     video_id = window.location.search;
+    show(loadingText)
+    hide(formDiv);
+    let linkSlice = sliceFullLink(linkInput.value);
+
     sendRequest(video_id.slice(3), function() {
       hide(loadingText);
-      show(speedSlider);
-      show(playButton);
+      hide(info)
+      show(controlsDiv);
+      showPic(video_id.slice(3))
     });
   }
 
@@ -75,6 +80,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
 
     function playBuffer() {
+      console.log("playing at")
       isPlaying = true
         sourceNode = audioContext.createBufferSource();
         sourceNode.loop = true;
@@ -87,7 +93,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
   function play() {
     audioContext.resume().then(()=> {
       if(!isPlaying) {
+        audioContext.resume().then(()=> {
+
         playBuffer();
+        })
       } else {
         pause()
       }    
